@@ -1,4 +1,3 @@
-"""Defines all the functions related to the database"""
 from app import db
 
 def fetch_match_history():

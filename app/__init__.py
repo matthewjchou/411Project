@@ -3,11 +3,9 @@ import sqlalchemy
 from yaml import load, Loader
 from flask import Flask
 
-app = Flask(__name__)
-
 def init_engine():
     if os.environ.get('GAE_ENV') != 'standard':
-        variables = load(open('app.yaml'), loader=Loader)
+        variables = load(open('app.yaml'), Loader=Loader)
         env_vars = variables['env_variables']
         for var in env_vars:
             os.environ[var] = env_vars[var]
@@ -24,11 +22,8 @@ def init_engine():
 
     return pool
     
+app = Flask(__name__)
 db = init_engine()
-conn = db.connect()
-
-conn.execute('SELECT * FROM matchHistory')
-
 
 from app import routes
 
