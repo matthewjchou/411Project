@@ -1,0 +1,19 @@
+runtime: python38
+
+instance_class: F1
+
+env_variables: 
+  MYSQL_USER: 'root' #username
+  MYSQL_PASSWORD: '1234' #password
+  MYSQL_DB: 'riot363' #db name
+  MYSQL_HOST: '35.184.19.211' #ip
+
+handlers: 
+- url: /img
+  static_dir: static/img
+
+- url: /script
+  static_dir: static/script
+
+- url: /style
+  static_dir: static/style
