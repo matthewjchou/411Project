@@ -12,11 +12,13 @@ def homepage():
 
 @app.route('/champions')
 def champions():
-    return render_template('table.html', table_name='Champions')
+    # items = db_helper.fetch_champions()
+    return render_template('table.html', table_name='Champions', items=items)
 
 @app.route('/match_history')
 def match_history():
-    return render_template('table.html', table_name='Match History')
+    keys, items = db_helper.fetch_match_history()
+    return render_template('table.html', table_name='Match History', keys=keys, items=items)
 
 @app.route('/champion_mastery')
 def champion_mastery():

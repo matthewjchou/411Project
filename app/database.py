@@ -1,5 +1,6 @@
 from app import db
 import utils
+from utils import debug_log
 
 def fetch_tables():
     conn = db.connect()
@@ -17,12 +18,24 @@ def fetch_tables():
 
     return items
 
-def fetch_match_history():
+def fetch_champions():
     conn = db.connect()
-    result = conn.execute('SELECT * FROM matchHistory LIMIT 5').fetchall()
+    result = conn.execute('SELECT * FROM champions LIMIT 20').fetchall()
     conn.close()
 
-    return result
+    items = []
+    for r in result:
+        debug_log(str(r))
+    return items
+
+def fetch_match_history():
+    conn = db.connect()
+    result = conn.execute('SELECT * FROM matchHistory LIMIT 5')
+    conn.close()
+    
+    keys, items = utils.result_to_dict(result)
+
+    return keys, items
 
 # example code below:
 
