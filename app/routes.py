@@ -7,8 +7,28 @@ from app import database as db_helper
 @app.route("/")
 def homepage():
     """ returns rendered homepage """
-    items = db_helper.fetch_match_history()
+    items = db_helper.fetch_tables()
     return render_template("index.html", items=items)
+
+@app.route('/champions')
+def champions():
+    return render_template('table.html', table_name='Champions')
+
+@app.route('/match_history')
+def match_history():
+    return render_template('table.html', table_name='Match History')
+
+@app.route('/champion_mastery')
+def champion_mastery():
+    return render_template('table.html', table_name='Champion Mastery')
+
+@app.route('/matches')
+def matches():
+    return render_template('table.html', table_name='Matches')
+
+@app.route('/summoners')
+def summoners():
+    return render_template('table.html', table_name='Summoners')
 
 # Example code below:
 

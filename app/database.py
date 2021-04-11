@@ -1,8 +1,25 @@
 from app import db
+import utils
+
+def fetch_tables():
+    conn = db.connect()
+    result = conn.execute('SHOW TABLES')
+    conn.close()
+
+    items = []
+    for r in result:
+        n = utils.camel_to_normal(r[0])
+        item = {
+            "name": n,
+            "link": '/' + utils.normal_to_snake(n)
+        }
+        items.append(item)
+
+    return items
 
 def fetch_match_history():
     conn = db.connect()
-    result = conn.execute('SELECT * FROM matchHistory').fetchall()
+    result = conn.execute('SELECT * FROM matchHistory LIMIT 5').fetchall()
     conn.close()
 
     return result
