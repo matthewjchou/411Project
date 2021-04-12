@@ -47,25 +47,33 @@ def remove_row_by_pk(table, pks):
     conn.execute(query)
     conn.close()
 
-def add_row(table, data):
-    # insert
-    pass
+def create_row(data):
+    data = utils.fix_nesting(data)
+    data = json.loads(data)
+    
+    table = data['table']
+    table = utils.hyphen_to_camel(table)
+    fields, keys, vals = utils.generate_fields(data)
+    utils.debug_log(str(fields))
+
+    conn = db.connect()
+    query = f'INSERT INTO {table} ({keys}) VALUES ({vals})'
+    utils.debug_log(query)
+    conn.execute(query)
+    conn.close()
+
 
 def update_row(data):
-    utils.debug_log("do something")
     data = utils.fix_nesting(data)
     data = json.loads(data)
 
-    utils.debug_log(str(data['pk']))
     pks = data['pk']
-
-    utils.debug_log(str(pks))
     id = utils.generate_where_from_pk(pks)
     utils.debug_log(id)
 
     table = data['table']
     table = utils.hyphen_to_camel(table)
-    fields = utils.generate_fields(data)
+    fields, k, v = utils.generate_fields(data)
     utils.debug_log(str(fields))
 
     conn = db.connect()

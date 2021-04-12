@@ -77,7 +77,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: type === 'Edit' ? '/edit/' + pk : '/create',
+            url: type === 'Edit' ? '/edit' : '/create',
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify(dict),
             success: function (res) {

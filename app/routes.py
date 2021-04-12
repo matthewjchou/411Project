@@ -46,7 +46,7 @@ def delete(keys):
 
     return jsonify(result)
 
-@app.route("/edit/<string:keys>", methods=['POST'])
+@app.route("/edit", methods=['POST'])
 def update():
     """ recieved post requests for entry updates """
     utils.debug_log('here')
@@ -65,8 +65,14 @@ def update():
 def create():
     """ recieves post requests to add new task """
     data = request.get_json()
-    db_helper.insert_new_task(data['description'])
-    result = {'success': True, 'response': 'Done'}
+    utils.debug_log(str(data))
+
+    try:
+        db_helper.create_row(data)
+        result = {'success': True, 'response': 'Done'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+
     return jsonify(result)
 
 

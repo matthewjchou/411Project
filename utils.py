@@ -78,6 +78,8 @@ def generate_where_from_pk(pks):
 
 def generate_fields(data):
     fields = ""
+    keys = ""
+    vals = ""
     for k, v in data.items():
         if k == 'pk' or k == 'table':
             continue
@@ -85,9 +87,13 @@ def generate_fields(data):
             fields += f'{k}="{v}", '
         else:
             fields += f'{k}={v}, '
+        keys += f'{k}, '
+        vals += f'"{v}", '
     fields = fields[:-2]
+    keys = keys[:-2]
+    vals = vals[:-2]
 
-    return fields
+    return fields, keys, vals
 
 def debug_log(s):
     with open('debug.txt', 'a') as f:
