@@ -20,6 +20,7 @@ def fetch_tables():
     return items
 
 def fetch_champions():
+    
     conn = db.connect()
     result = conn.execute('SELECT * FROM champions LIMIT 20').fetchall()
     conn.close()
