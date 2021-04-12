@@ -104,6 +104,7 @@ def search_results():
 
 @app.route("/mattQuery")
 def matt_query():
+    utils.debug_log('here1')
     keys, items = db_helper.adv_query_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
 
