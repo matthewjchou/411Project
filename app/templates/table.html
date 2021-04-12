@@ -75,11 +75,11 @@
                         {% endif %}
                     {% endfor %}
 
-                    <td><form method="POST" action="{{"/edit/"~table_name ~ "|" ~ item.PK}}">
+                    <td><form method="POST" action="{{"/edit/" ~ table_name ~ "|" ~ item.PK}}">
                         <button type="submit" class="btn btn-primary">Edit</button>
                     </form></td>
 
-                    <td><form method="POST" action="{{"/delete/"~table_name ~ "|" ~ item.PK}}">
+                    <td><form method="POST" action="{{"/delete/" ~ table_name ~ "|" ~ item.PK}}">
                         <button type="submit" class="btn btn-primary">Delete</button>
                     </form></td>
                 </tr>
