@@ -2,6 +2,7 @@
 from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
+import utils
 
 
 @app.route("/")
@@ -12,7 +13,6 @@ def homepage():
 
 @app.route('/champions')
 def champions():
-    # items = db_helper.fetch_champions()
     return render_template('table.html', table_name='Champions', items=items)
 
 @app.route('/match_history')
@@ -31,6 +31,40 @@ def matches():
 @app.route('/summoners')
 def summoners():
     return render_template('table.html', table_name='Summoners')
+
+@app.route("/delete/<string:keys>", methods=['POST'])
+def delete(keys):
+    """ recieved post requests for entry delete """
+    utils.debug_log(str(keys))
+    split = keys.split('|')
+    table = utils.normal_to_camel(split[0])
+    try:
+        db_helper.remove_row_by_pk(table, split[1])
+        result = {'success': True, 'response': 'Removed row'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+
+    return jsonify(results)
+
+@app.route("/edit/<int:task_id>", methods=['POST'])
+def update(task_id):
+    """ recieved post requests for entry updates """
+
+    data = request.get_json()
+
+    try:
+        if "status" in data:
+            db_helper.update_status_entry(task_id, data["status"])
+            result = {'success': True, 'response': 'Status Updated'}
+        elif "description" in data:
+            db_helper.update_task_entry(task_id, data["description"])
+            result = {'success': True, 'response': 'Task Updated'}
+        else:
+            result = {'success': True, 'response': 'Nothing Updated'}
+    except:
+        result = {'success': False, 'response': 'Something went wrong'}
+
+    return jsonify(result)
 
 # Example code below:
 

@@ -59,7 +59,9 @@
             <thead>
             <tr>
                 {% for k in keys %}
-                    <th>{{k}}</th>
+                    {% if k != 'PK' %}
+                        <th>{{k}}</th>
+                    {% endif %}
                 {% endfor %}
             </tr>
             </thead>
@@ -68,12 +70,18 @@
             {% for item in items %}
                 <tr>
                     {% for k, v in item.items() %}
-                        <td>{{v}}</td>
+                        {% if k != 'PK' %}
+                            <td>{{v}}</td>
+                        {% endif %}
                     {% endfor %}
-                    
-                    <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="{{item.id}}" data-content="{{item.task}}"><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
-    
-                    <td><button class="btn btn-outline-secondary btn-sm remove" data-source="{{item.id}}" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></button></td>
+
+                    <td><form method="POST" action="{{"/edit/"~table_name ~ "|" ~ item.PK}}">
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form></td>
+
+                    <td><form method="POST" action="{{"/delete/"~table_name ~ "|" ~ item.PK}}">
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form></td>
                 </tr>
             {% endfor %}
             

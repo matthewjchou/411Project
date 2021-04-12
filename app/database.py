@@ -1,6 +1,7 @@
 from app import db
 import utils
 from utils import debug_log
+import json
 
 def fetch_tables():
     conn = db.connect()
@@ -30,12 +31,29 @@ def fetch_champions():
 
 def fetch_match_history():
     conn = db.connect()
-    result = conn.execute('SELECT * FROM matchHistory LIMIT 5')
+    result = conn.execute('SELECT * FROM matchHistory LIMIT 20')
     conn.close()
     
-    keys, items = utils.result_to_dict(result)
-
+    pk = ['AccountId', 'GameId']
+    keys, items = utils.result_to_dict(result, pk)
     return keys, items
+
+def remove_row_by_pk(table, pks):
+    pks = pks.replace("'", '"')
+    pks = json.loads(pks)
+    id = ""
+    for k, v in pks.items():
+        if any(c.isalpha() for c in str(v)):
+            id += f'{k}="{v}" AND '
+        else:
+            id += f'{k}={v} AND '
+    id = id[:-5]
+
+    conn = db.connect()
+    query = f'DELETE FROM {table} WHERE {id};'
+    utils.debug_log(query)
+    conn.execute(query)
+    conn.close()
 
 # example code below:
 
