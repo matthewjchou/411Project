@@ -25,7 +25,7 @@
         
             <!-- Button trigger modal -->
             <div style="text-align: right;">
-            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="New Task">Add Entry</button>
+            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source={{table_name}} data-type="New" data-keys={{keys|string|replace(' ', '')}}>Add Entry</button>
             </div>
     
             
@@ -33,15 +33,19 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="Label">Add a task</h5>
+                    <h5 class="modal-title" id="Label">Add an entry</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
     
+                
                 <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="task-form-display">Task</span>
-                        <input type="text" class="form-control" placeholder="Description of task" aria-label="task-name" aria-describedby="basic-addon1">
-                    </div>
+                    {% for k in keys %}
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">{{k}}</span>
+                            <input id={{k}} type="text" class="form-control" placeholder="Text here" aria-label="task-name" aria-describedby="basic-addon1">
+                        </div>
+                    {% endfor %}
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -75,9 +79,7 @@
                         {% endif %}
                     {% endfor %}
 
-                    <td><form method="POST" action="{{"/edit/" ~ table_name ~ "|" ~ item.PK}}">
-                        <button type="submit" class="btn btn-primary">Edit</button>
-                    </form></td>
+                    <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="{{table_name}}" data-pk="{{item.PK}}" data-type="Edit" data-keys={{keys|string|replace(' ', '')}}><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
 
                     <td><form method="POST" action="{{"/delete/" ~ table_name ~ "|" ~ item.PK}}">
                         <button type="submit" class="btn btn-primary">Delete</button>

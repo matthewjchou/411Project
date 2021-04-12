@@ -18,7 +18,7 @@ def champions():
 @app.route('/match_history')
 def match_history():
     keys, items = db_helper.fetch_match_history()
-    return render_template('table.html', table_name='Match History', keys=keys, items=items)
+    return render_template('table.html', table_name='Match-History', keys=keys, items=items)
 
 @app.route('/champion_mastery')
 def champion_mastery():
@@ -37,7 +37,7 @@ def delete(keys):
     """ recieved post requests for entry delete """
     utils.debug_log(str(keys))
     split = keys.split('|')
-    table = utils.normal_to_camel(split[0])
+    table = utils.hyphen_to_camel(split[0])
     try:
         db_helper.remove_row_by_pk(table, split[1])
         result = {'success': True, 'response': 'Removed row'}
@@ -46,11 +46,12 @@ def delete(keys):
 
     return jsonify(result)
 
-@app.route("/edit/<int:task_id>", methods=['POST'])
-def update(task_id):
+@app.route("/edit/<string:keys>", methods=['POST'])
+def update(keys):
     """ recieved post requests for entry updates """
-
+    utils.debug_log('here')
     data = request.get_json()
+    utils.debug_log(str(data))
 
     try:
         if "status" in data:

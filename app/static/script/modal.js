@@ -1,38 +1,82 @@
 $(document).ready(function () {
     // example: https://getbootstrap.com/docs/4.2/components/modal/
     // show modal
+    var keys
+    var pk
+    var type
+    var tableName
     $('#task-modal').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget) // Button that triggered the modal
-        const taskID = button.data('source') // Extract info from data-* attributes
-        const content = button.data('content') // Extract info from data-* attributes
+        tableName = button.data('source') // Extract info from data-* attributes
+        pk = button.data('pk') // Extract info from data-* attributes
+        type = button.data('type')
+        const keysStringRaw = button.data('keys')
+
+        console.log(tableName)
+        console.log(pk)
+        console.log(keysStringRaw)
+
+        keys = keysStringRaw.slice(11,-2)
+        console.log(keys)
+        keys = keys.split(',')
+        // var keysString
+        for (i = 0; i < keys.length; i++) {
+            keys[i] = keys[i].slice(1,-1)
+            // keysString += keys[i]
+        }
+        console.log(keys)
 
         const modal = $(this)
-        if (taskID === 'New Task') {
-            modal.find('.modal-title').text(taskID)
-            $('#task-form-display').removeAttr('taskID')
+        if (type === 'New') {
+            console.log('New')
+            // for (key in keys) {
+            //     id = '#' + key
+            //     $(key).removeAttr('PK')
+            // }
         } else {
-            modal.find('.modal-title').text('Edit Task ' + taskID)
-            $('#task-form-display').attr('taskID', taskID)
+            console.log('Edit')
+            // for (key in keys) {
+            //     id = '#' + key
+            //     $(key).attr('PK', pk)
+            // }
         }
+        // if (taskID === 'New Task') {
+        //     modal.find('.modal-title').text(taskID)
+        //     $('#task-form-display').removeAttr('taskID')
+        // } else {
+        //     modal.find('.modal-title').text('Edit Task ' + taskID)
+        //     $('#task-form-display').attr('taskID', taskID)
+        // }
 
-        if (content) {
-            modal.find('.form-control').val(content);
-        } else {
-            modal.find('.form-control').val('');
-        }
-    })
+        // if (content) {
+        //     modal.find('.form-control').val(content);
+        // } else {
+        //     modal.find('.form-control').val('');
+        // }
+        // console.log($('#AccountId').val())
+        // console.log(document.querySelector('#AccountId').value)
+    });
 
 
     $('#submit-task').click(function () {
-        const tID = $('#task-form-display').attr('taskID');
-        console.log($('#task-modal').find('.form-control').val())
+        
+        console.log(keys)
+        // console.log($('#AccountId').val())
+        var dict = {}
+        for (key of keys) { 
+            v = $('#' + key).val()
+            if (v) {
+                dict.key = v
+            }
+        }
+        console.log(dict)
+        console.log(JSON.stringify(dict))
+
         $.ajax({
             type: 'POST',
-            url: tID ? '/edit/' + tID : '/create',
+            url: type === 'Edit' ? '/edit/' + pk : '/create',
             contentType: 'application/json;charset=UTF-8',
-            data: JSON.stringify({
-                'description': $('#task-modal').find('.form-control').val()
-            }),
+            data: JSON.stringify(dict),
             success: function (res) {
                 console.log(res.response)
                 location.reload();
@@ -61,7 +105,7 @@ $(document).ready(function () {
     $('.state').click(function () {
         const state = $(this)
         const tID = state.data('source')
-        const new_state
+        var new_state
         if (state.text() === "In Progress") {
             new_state = "Complete"
         } else if (state.text() === "Complete") {

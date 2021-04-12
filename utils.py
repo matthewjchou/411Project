@@ -29,7 +29,18 @@ def normal_to_camel(normal):
 
     debug_log(ret)
     return ret
-        
+
+def hyphen_to_camel(hyphen):
+    split = hyphen.split('-')
+    ret = ""
+    for s in split:
+        if ret == "":
+            ret += s.lower()
+            continue
+        ret += s[0].upper() + s[1:]
+
+    debug_log(ret)
+    return ret
 
 def result_to_dict(result, PK=None):
     keys = result.keys()

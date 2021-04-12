@@ -20,7 +20,6 @@ def fetch_tables():
     return items
 
 def fetch_champions():
-    
     conn = db.connect()
     result = conn.execute('SELECT * FROM champions LIMIT 20').fetchall()
     conn.close()
@@ -56,6 +55,13 @@ def remove_row_by_pk(table, pks):
     conn.execute(query)
     conn.close()
 
+def add_row(table, data):
+    # insert
+    pass
+
+def update_row(table, pks, data):
+    # update
+    pass
 # example code below:
 
 # def fetch_todo() -> dict:
