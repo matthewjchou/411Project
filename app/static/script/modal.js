@@ -59,16 +59,19 @@ $(document).ready(function () {
 
 
     $('#submit-task').click(function () {
-        
-        console.log(keys)
-        // console.log($('#AccountId').val())
         var dict = {}
         for (key of keys) { 
+            console.log(key)
             v = $('#' + key).val()
             if (v) {
-                dict.key = v
+                dict["" + key] = v
             }
         }
+        if (pk) {
+            dict.pk = pk
+        }
+        dict.table = tableName
+
         console.log(dict)
         console.log(JSON.stringify(dict))
 

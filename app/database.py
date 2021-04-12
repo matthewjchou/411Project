@@ -25,8 +25,8 @@ def fetch_champions():
     conn.close()
 
     items = []
-    for r in result:
-        debug_log(str(r))
+    # for r in result:
+    #     debug_log(str(r))
     return items
 
 def fetch_match_history():
@@ -39,15 +39,7 @@ def fetch_match_history():
     return keys, items
 
 def remove_row_by_pk(table, pks):
-    pks = pks.replace("'", '"')
-    pks = json.loads(pks)
-    id = ""
-    for k, v in pks.items():
-        if any(c.isalpha() for c in str(v)):
-            id += f'{k}="{v}" AND '
-        else:
-            id += f'{k}={v} AND '
-    id = id[:-5]
+    id = utils.generate_where_from_pk(pks)
 
     conn = db.connect()
     query = f'DELETE FROM {table} WHERE {id};'
@@ -59,9 +51,30 @@ def add_row(table, data):
     # insert
     pass
 
-def update_row(table, pks, data):
-    # update
-    pass
+def update_row(data):
+    utils.debug_log("do something")
+    data = utils.fix_nesting(data)
+    data = json.loads(data)
+
+    utils.debug_log(str(data['pk']))
+    pks = data['pk']
+
+    utils.debug_log(str(pks))
+    id = utils.generate_where_from_pk(pks)
+    utils.debug_log(id)
+
+    table = data['table']
+    table = utils.hyphen_to_camel(table)
+    fields = utils.generate_fields(data)
+    utils.debug_log(str(fields))
+
+    conn = db.connect()
+    query = f'UPDATE {table} SET {fields} WHERE {id};'
+    utils.debug_log(query)
+    conn.execute(query)
+    conn.close()
+
+
 # example code below:
 
 # def fetch_todo() -> dict:

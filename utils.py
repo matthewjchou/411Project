@@ -15,7 +15,7 @@ def normal_to_snake(normal):
     ret = ""
     for s in split:
         ret += s.lower() + '_'
-    debug_log(ret[:-1])
+    # debug_log(ret[:-1])
     return ret[:-1]
 
 def normal_to_camel(normal):
@@ -27,7 +27,7 @@ def normal_to_camel(normal):
             continue
         ret += s[0].upper() + s[1:]
 
-    debug_log(ret)
+    # debug_log(ret)
     return ret
 
 def hyphen_to_camel(hyphen):
@@ -39,7 +39,7 @@ def hyphen_to_camel(hyphen):
             continue
         ret += s[0].upper() + s[1:]
 
-    debug_log(ret)
+    # debug_log(ret)
     return ret
 
 def result_to_dict(result, PK=None):
@@ -53,9 +53,41 @@ def result_to_dict(result, PK=None):
             for k in PK:
                 key[k] = item[k]
             items[i]['PK'] = str(key)
-            debug_log(str(items[i]))
+            # debug_log(str(items[i]))
 
     return items[0].keys(), items
+
+def fix_nesting(s):
+    s = str(s).replace("'", '"')
+    s = s.replace('"{', '{')
+    s = s.replace('}"', '}')
+    return s
+
+def generate_where_from_pk(pks):
+    pks = str(pks).replace("'", '"')
+    pks = json.loads(pks)
+    id = ""
+    for k, v in pks.items():
+        if any(c.isalpha() for c in str(v)):
+            id += f'{k}="{v}" AND '
+        else:
+            id += f'{k}={v} AND '
+    id = id[:-5]
+    
+    return id
+
+def generate_fields(data):
+    fields = ""
+    for k, v in data.items():
+        if k == 'pk' or k == 'table':
+            continue
+        if any(c.isalpha() for c in str(v)):
+            fields += f'{k}="{v}", '
+        else:
+            fields += f'{k}={v}, '
+    fields = fields[:-2]
+
+    return fields
 
 def debug_log(s):
     with open('debug.txt', 'a') as f:

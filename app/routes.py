@@ -47,25 +47,28 @@ def delete(keys):
     return jsonify(result)
 
 @app.route("/edit/<string:keys>", methods=['POST'])
-def update(keys):
+def update():
     """ recieved post requests for entry updates """
     utils.debug_log('here')
     data = request.get_json()
     utils.debug_log(str(data))
 
     try:
-        if "status" in data:
-            db_helper.update_status_entry(task_id, data["status"])
-            result = {'success': True, 'response': 'Status Updated'}
-        elif "description" in data:
-            db_helper.update_task_entry(task_id, data["description"])
-            result = {'success': True, 'response': 'Task Updated'}
-        else:
-            result = {'success': True, 'response': 'Nothing Updated'}
+        db_helper.update_row(data)
+        result = {'success': True, 'response': 'Status Updated'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
 
     return jsonify(result)
+
+@app.route("/create", methods=['POST'])
+def create():
+    """ recieves post requests to add new task """
+    data = request.get_json()
+    db_helper.insert_new_task(data['description'])
+    result = {'success': True, 'response': 'Done'}
+    return jsonify(result)
+
 
 # Example code below:
 
