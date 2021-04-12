@@ -44,7 +44,7 @@ def delete(keys):
     except:
         result = {'success': False, 'response': 'Something went wrong'}
 
-    return jsonify(results)
+    return jsonify(result)
 
 @app.route("/edit/<int:task_id>", methods=['POST'])
 def update(task_id):
