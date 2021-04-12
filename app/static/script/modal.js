@@ -26,35 +26,11 @@ $(document).ready(function () {
         }
         console.log(keys)
 
-        const modal = $(this)
         if (type === 'New') {
             console.log('New')
-            // for (key in keys) {
-            //     id = '#' + key
-            //     $(key).removeAttr('PK')
-            // }
         } else {
             console.log('Edit')
-            // for (key in keys) {
-            //     id = '#' + key
-            //     $(key).attr('PK', pk)
-            // }
         }
-        // if (taskID === 'New Task') {
-        //     modal.find('.modal-title').text(taskID)
-        //     $('#task-form-display').removeAttr('taskID')
-        // } else {
-        //     modal.find('.modal-title').text('Edit Task ' + taskID)
-        //     $('#task-form-display').attr('taskID', taskID)
-        // }
-
-        // if (content) {
-        //     modal.find('.form-control').val(content);
-        // } else {
-        //     modal.find('.form-control').val('');
-        // }
-        // console.log($('#AccountId').val())
-        // console.log(document.querySelector('#AccountId').value)
     });
 
 
@@ -134,4 +110,39 @@ $(document).ready(function () {
         });
     });
 
+    $('#search-modal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget)
+        tableName = button.data('source')
+        keys = button.data('keys')
+
+        keys = keys.slice(11,-2)
+        console.log(keys)
+        keys = keys.split(',')
+        for (i = 0; i < keys.length; i++) {
+            keys[i] = keys[i].slice(1,-1)
+        }
+        console.log(keys)
+    });
+
+    $('#submit-search').click(function () {
+        var dict = {}
+        dict.keyword = $('#searchBox').val()
+        dict.table = tableName
+        dict.keys = keys
+        console.log(JSON.stringify(dict))
+
+        $.ajax({
+            type: 'POST',
+            url: '/search',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(dict),
+            success: function (res) {
+                console.log(res.response)
+                location.href = '/searchResults';
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
 });

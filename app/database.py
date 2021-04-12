@@ -3,6 +3,11 @@ import utils
 from utils import debug_log
 import json
 
+match_history_pks = ['AccountId', 'GameId']
+champions_pks = []
+search_results = None
+
+
 def fetch_tables():
     conn = db.connect()
     result = conn.execute('SHOW TABLES')
@@ -25,8 +30,6 @@ def fetch_champions():
     conn.close()
 
     items = []
-    # for r in result:
-    #     debug_log(str(r))
     return items
 
 def fetch_match_history():
@@ -34,8 +37,7 @@ def fetch_match_history():
     result = conn.execute('SELECT * FROM matchHistory LIMIT 20')
     conn.close()
     
-    pk = ['AccountId', 'GameId']
-    keys, items = utils.result_to_dict(result, pk)
+    keys, items = utils.result_to_dict(result, match_history_pks)
     return keys, items
 
 def remove_row_by_pk(table, pks):
@@ -82,6 +84,41 @@ def update_row(data):
     conn.execute(query)
     conn.close()
 
+def search(data):
+    table = data['table']
+    table = utils.hyphen_to_camel(table)
+    keyword = data['keyword']
+
+    keys = data['keys']
+    searches = utils.generate_searches(keys, keyword)
+
+    conn = db.connect()
+    query = f'SELECT * FROM {table} WHERE {searches};'
+    utils.debug_log(query)
+    result = conn.execute(query)
+    conn.close()
+
+    pk = []
+    if table == 'matchHistory':
+        pk = match_history_pks
+    elif table == 'champions':
+        pk = champions_pks
+
+    k, i = utils.result_to_dict(result, pk)
+
+    return k, i
+
+def adv_query_match_history():
+    conn = db.connect()
+    result = conn.execute('SELECT (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) AS Name, COUNT(DISTINCT Champion) AS Num_Champions FROM matchHistory m GROUP BY AccountId LIMIT 15;')
+    conn.close()
+    
+    keys = ['Name', 'Num_Champions']
+    result = result.fetchall()  
+    items = [dict(zip(keys, row)) for row in result]
+    for i in items:
+        utils.debug_log(str(i))
+    return keys, items
 
 # example code below:
 

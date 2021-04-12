@@ -30,6 +30,14 @@ def normal_to_camel(normal):
     # debug_log(ret)
     return ret
 
+def normal_to_hyphen(normal):
+    split = normal.split()
+    ret = ""
+    for s in split:
+        ret += s + '-'
+    
+    return ret[:-1]
+
 def hyphen_to_camel(hyphen):
     split = hyphen.split('-')
     ret = ""
@@ -42,6 +50,13 @@ def hyphen_to_camel(hyphen):
     # debug_log(ret)
     return ret
 
+def camel_to_hyphen(camel):
+    normal = camel_to_normal(camel)
+    hyphen = normal_to_hyphen(normal)
+
+    return hyphen
+    
+
 def result_to_dict(result, PK=None):
     keys = result.keys()
     result = result.fetchall()  
@@ -50,10 +65,11 @@ def result_to_dict(result, PK=None):
     if PK:
         for i, item in enumerate(items):
             key = {}
+            debug_log(str(item))
             for k in PK:
                 key[k] = item[k]
             items[i]['PK'] = str(key)
-            # debug_log(str(items[i]))
+            debug_log(str(items[i]))
 
     return items[0].keys(), items
 
@@ -94,6 +110,16 @@ def generate_fields(data):
     vals = vals[:-2]
 
     return fields, keys, vals
+
+def generate_searches(keys, keyword):
+    searches = ""
+    for k in keys:
+        if k == 'PK':
+            continue
+        searches += f'{k} LIKE "{keyword}" OR '
+    searches = searches[:-4]
+
+    return searches 
 
 def debug_log(s):
     with open('debug.txt', 'a') as f:

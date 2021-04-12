@@ -21,7 +21,42 @@
             <h1 class="mt-5">{{table_name}} Table</h1>
         </main>
 
+        <!-- SEARCH -->
+        <div class="container">    
+        
+            <!-- Button trigger modal -->
+            <div style="text-align: right;">
+            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#search-modal" data-source={{table_name}} data-keys={{keys|string|replace(' ', '')}}>Search</button>
+            </div>
+    
+            
+            <div class="modal fade" id="search-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Label">Search</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+    
+                
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Search</span>
+                        <input id="searchBox" type="text" class="form-control" placeholder="Text here" aria-label="task-name" aria-describedby="basic-addon1">
+                    </div>
 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="submit-search" type="button" class="btn btn-primary">Save changes</button>
+                </div>
+                </div>
+            </div>
+            </div>
+    
+        </div>
+
+        <!-- ADD -->
         <div class="container">    
         
             <!-- Button trigger modal -->
@@ -41,10 +76,12 @@
                 
                 <div class="modal-body">
                     {% for k in keys %}
-                        <div class="input-group mb-3">
-                            <span class="input-group-text">{{k}}</span>
-                            <input id={{k}} type="text" class="form-control" placeholder="Text here" aria-label="task-name" aria-describedby="basic-addon1">
-                        </div>
+                        {% if k != 'PK' %}
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">{{k}}</span>
+                                <input id={{k}} type="text" class="form-control" placeholder="Text here" aria-label="task-name" aria-describedby="basic-addon1">
+                            </div>
+                        {% endif %}
                     {% endfor %}
 
                 </div>
@@ -56,6 +93,14 @@
             </div>
             </div>
     
+        </div>
+
+        <div class="container">
+        <div style="text-align: right;">
+            <form method="POST" action="{{advQuery}}">
+                <button type="submit" class="btn btn-primary">AdvQuery</button>
+            </form>
+        </div>
         </div>
     
         <!--Todo Table-->

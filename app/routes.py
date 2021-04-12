@@ -3,7 +3,9 @@ from flask import render_template, request, jsonify
 from app import app
 from app import database as db_helper
 import utils
+import json
 
+search_results = None
 
 @app.route("/")
 def homepage():
@@ -18,7 +20,7 @@ def champions():
 @app.route('/match_history')
 def match_history():
     keys, items = db_helper.fetch_match_history()
-    return render_template('table.html', table_name='Match-History', keys=keys, items=items)
+    return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery='/mattQuery')
 
 @app.route('/champion_mastery')
 def champion_mastery():
@@ -75,6 +77,36 @@ def create():
 
     return jsonify(result)
 
+@app.route("/search", methods=['POST'])
+def search():
+    data = request.get_json()
+    utils.debug_log(str(data))
+    data = utils.fix_nesting(data)
+    data = json.loads(data)
+    test = "DOES THIS STAY NONE"
+    
+    try:
+        keys, items = db_helper.search(data)
+        global search_results
+        search_results = (data['table'], keys, items)
+        utils.debug_log(str(search_results))
+        result = {'success': True, 'response': 'Done'}
+    except Exception as e:
+        utils.debug_log(str(e))
+        result = {'success': False, 'response': 'Something went wrong'}
+
+    return jsonify(result)
+
+@app.route("/searchResults")
+def search_results():
+    table = utils.camel_to_hyphen(search_results[0])
+    return render_template('table.html', table_name=table, keys=search_results[1], items=search_results[2])
+
+@app.route("/mattQuery", methods=['POST'])
+def matt_query():
+    utils.debug_log('being called')
+    keys, items = db_helper.adv_query_match_history()
+    return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
 
 # Example code below:
 
