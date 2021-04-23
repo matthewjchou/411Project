@@ -110,8 +110,9 @@ def search(data):
     return k, i
 
 def adv_query_match_history():
+    utils.debug_log("here2")
     conn = db.connect()
-    result = conn.execute('SELECT (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) AS Name, COUNT(DISTINCT Champion) AS Num_Champions FROM matchHistory m GROUP BY AccountId LIMIT 15;')
+    result = conn.execute('SELECT (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) AS Name, COUNT(DISTINCT Champion) AS Num_Champions FROM matchHistory m GROUP BY AccountId LIMIT 100;')
     conn.close()
     
     keys = ['Name', 'Num_Champions']

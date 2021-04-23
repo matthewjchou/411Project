@@ -2,3 +2,4 @@ __pycache__
 .venv
 debug.txt
 411project
+cloud_sql_proxy

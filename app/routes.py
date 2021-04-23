@@ -84,7 +84,6 @@ def search():
     utils.debug_log(str(data))
     data = utils.fix_nesting(data)
     data = json.loads(data)
-    test = "DOES THIS STAY NONE"
     
     try:
         keys, items = db_helper.search(data)
@@ -100,12 +99,13 @@ def search():
 
 @app.route("/searchResults")
 def search_results():
-    table = utils.camel_to_hyphen(search_results[0])
+    table = search_results[0]
+    utils.debug_log(table)
     return render_template('table.html', table_name=table, keys=search_results[1], items=search_results[2])
 
-@app.route("/mattQuery", methods=['POST'])
+@app.route("/mattQuery")
 def matt_query():
-    utils.debug_log('being called')
+    utils.debug_log('here1')
     keys, items = db_helper.adv_query_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
     

@@ -4,7 +4,7 @@ from datetime import datetime
 
 def camel_to_normal(camel):
     split = re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', camel)).split()
-    ret = " "
+    ret = ""
     for s in split:
         ret += s[0].upper() + s[1:] + " "
     
