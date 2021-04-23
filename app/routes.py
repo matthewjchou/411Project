@@ -15,7 +15,8 @@ def homepage():
 
 @app.route('/champions')
 def champions():
-    return render_template('table.html', table_name='Champions', items=items)
+    keys, items = db_helper.fetch_champions()
+    return render_template('table.html', table_name='champions', keys=keys, items=items,advQuery='/hskQuery')
 
 @app.route('/match_history')
 def match_history():
@@ -107,6 +108,12 @@ def matt_query():
     utils.debug_log('being called')
     keys, items = db_helper.adv_query_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
+    
+@app.route("/hskQuery", methods=['POST'])
+def hsk_query():
+    utils.debug_log('being called')
+    keys, items = db_helper.adv_query_champions()
+    return render_template('table.html', table_name='champions', keys=keys, items=items, advQuery="/hskQuery")
 
 # Example code below:
 

@@ -3,8 +3,8 @@ import utils
 from utils import debug_log
 import json
 
-match_history_pks = ['AccountId', 'GameId']
-champions_pks = []
+champPK = ['DataKey']
+match_pk = []
 search_results = None
 
 
@@ -26,11 +26,12 @@ def fetch_tables():
 
 def fetch_champions():
     conn = db.connect()
-    result = conn.execute('SELECT * FROM champions LIMIT 20').fetchall()
+    result = conn.execute('SELECT * FROM champions')
     conn.close()
 
-    items = []
-    return items
+    champPK = ['DataKey']
+    keys, items = utils.result_to_dict(result, champPK)
+    return keys, items
 
 def fetch_match_history():
     conn = db.connect()
@@ -99,10 +100,10 @@ def search(data):
     conn.close()
 
     pk = []
-    if table == 'matchHistory':
-        pk = match_history_pks
-    elif table == 'champions':
-        pk = champions_pks
+    if table == 'champions':
+        pk = champPK
+    elif table == 'matches':
+        pk = match_pk
 
     k, i = utils.result_to_dict(result, pk)
 
@@ -114,6 +115,18 @@ def adv_query_match_history():
     conn.close()
     
     keys = ['Name', 'Num_Champions']
+    result = result.fetchall()  
+    items = [dict(zip(keys, row)) for row in result]
+    for i in items:
+        utils.debug_log(str(i))
+    return keys, items
+
+def adv_query_champions():
+    conn = db.connect()
+    result = conn.execute('SELECT (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) AS summoner, m.Champion AS championChar, c.DataName AS champDName FROM matchHistory m JOIN champions c ON m.Champion = c.DataKey ORDER BY (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) ASC LIMIT 15;')
+    conn.close()
+    
+    keys = ['summoner', 'championChar', 'champDName']
     result = result.fetchall()  
     items = [dict(zip(keys, row)) for row in result]
     for i in items:
