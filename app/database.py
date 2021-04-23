@@ -3,6 +3,9 @@ import utils
 from utils import debug_log
 import json
 
+match_history_pks = ['AccountId', 'GameId']
+champions_pks = []
+
 champPK = ['DataKey']
 match_pk = []
 search_results = None
