@@ -32,6 +32,15 @@ def fetch_champions():
     items = []
     return items
 
+def fetch_champion_mastery():
+    conn = db.connect()
+    result = conn.execute('SELECT * FROM championMastery LIMIT 20')
+    conn.close()
+    
+    pk = ['SummonerId','ChampionId']
+    keys, items = utils.result_to_dict(result, pk)
+    return keys, items
+    
 def fetch_match_history():
     conn = db.connect()
     result = conn.execute('SELECT * FROM matchHistory LIMIT 20')
@@ -108,13 +117,12 @@ def search(data):
 
     return k, i
 
-def adv_query_match_history():
-    utils.debug_log("here2")
+def adv_query_champion_mastery():
     conn = db.connect()
-    result = conn.execute('SELECT (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) AS Name, COUNT(DISTINCT Champion) AS Num_Champions FROM matchHistory m GROUP BY AccountId LIMIT 100;')
+    result = conn.execute('SELECT championId, AVG(ChampionPoints) AS avgDamage FROM championMastery c JOIN summoners s ON c.SummonerId = s.Id WHERE Tier = "Challenger" GROUP BY ChampionId LIMIT 15;')
     conn.close()
     
-    keys = ['Name', 'Num_Champions']
+    keys = ['championId', 'avgDamage']
     result = result.fetchall()  
     items = [dict(zip(keys, row)) for row in result]
     for i in items:

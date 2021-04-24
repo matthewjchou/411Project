@@ -20,11 +20,12 @@ def champions():
 @app.route('/match_history')
 def match_history():
     keys, items = db_helper.fetch_match_history()
-    return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery='/mattQuery')
+    return render_template('table.html', table_name='Match-History', keys=keys, items=items)
 
 @app.route('/champion_mastery')
 def champion_mastery():
-    return render_template('table.html', table_name='Champion Mastery')
+    keys, items = db_helper.fetch_champion_mastery()
+    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery')
 
 @app.route('/matches')
 def matches():
@@ -83,6 +84,7 @@ def search():
     utils.debug_log(str(data))
     data = utils.fix_nesting(data)
     data = json.loads(data)
+    test = "DOES THIS STAY NONE"
     
     try:
         keys, items = db_helper.search(data)
@@ -98,15 +100,14 @@ def search():
 
 @app.route("/searchResults")
 def search_results():
-    table = search_results[0]
-    utils.debug_log(table)
+    table = utils.camel_to_hyphen(search_results[0])
     return render_template('table.html', table_name=table, keys=search_results[1], items=search_results[2])
 
-@app.route("/mattQuery")
-def matt_query():
-    utils.debug_log('here1')
-    keys, items = db_helper.adv_query_match_history()
-    return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
+@app.route("/ethanQuery", methods=['POST'])
+def ethan_query():
+    utils.debug_log('being called')
+    keys, items = db_helper.adv_query_champion_mastery()
+    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
 
 # Example code below:
 
