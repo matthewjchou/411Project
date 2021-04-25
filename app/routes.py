@@ -24,7 +24,8 @@ def match_history():
 
 @app.route('/champion_mastery')
 def champion_mastery():
-    return render_template('table.html', table_name='Champion Mastery')
+    keys, items = db_helper.fetch_champion_mastery()
+    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery')
 
 @app.route('/matches')
 def matches():
@@ -107,6 +108,12 @@ def matt_query():
     utils.debug_log('here1')
     keys, items = db_helper.adv_query_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
+
+@app.route("/ethanQuery", methods=['POST'])
+def ethan_query():
+    utils.debug_log('being called')
+    keys, items = db_helper.adv_query_champion_mastery()
+    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
 
 # Example code below:
 

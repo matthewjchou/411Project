@@ -121,6 +121,18 @@ def adv_query_match_history():
         utils.debug_log(str(i))
     return keys, items
 
+def adv_query_champion_mastery():
+    conn = db.connect()
+    result = conn.execute('SELECT championId, AVG(ChampionPoints) AS avgDamage FROM championMastery c JOIN summoners s ON c.SummonerId = s.Id WHERE Tier = "Challenger" GROUP BY ChampionId LIMIT 15;')
+    conn.close()
+    
+    keys = ['championId', 'avgDamage']
+    result = result.fetchall()  
+    items = [dict(zip(keys, row)) for row in result]
+    for i in items:
+        utils.debug_log(str(i))
+    return keys, items
+    
 # example code below:
 
 # def fetch_todo() -> dict:
