@@ -5,6 +5,7 @@ $(document).ready(function () {
     var pk
     var type
     var tableName
+    
     $('#task-modal').on('show.bs.modal', function (event) {
         const button = $(event.relatedTarget) // Button that triggered the modal
         tableName = button.data('source') // Extract info from data-* attributes

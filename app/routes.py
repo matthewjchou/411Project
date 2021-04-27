@@ -115,6 +115,12 @@ def ethan_query():
     keys, items = db_helper.adv_query_champion_mastery()
     return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
 
+# @app.route("/extracredit", methods=['POST'])
+# def extra_credit():
+#     utils.debug_log('being called')
+#     keys, items = db_helper.makeChartdb_helper.adv_query_champion_mastery()
+#     return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/extracredit")
+
 # Example code below:
 
 # @app.route("/delete/<int:task_id>", methods=['POST'])
