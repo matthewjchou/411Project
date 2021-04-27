@@ -24,6 +24,14 @@ def fetch_tables():
 
     return items
 
+def fetch_champion_mastery():
+    conn = db.connect()
+    result = conn.execute('SELECT * FROM championMastery LIMIT 20')
+    conn.close()
+    
+    keys, items = utils.result_to_dict(result)
+    return keys, items
+
 def fetch_champions():
     conn = db.connect()
     result = conn.execute('SELECT * FROM champions LIMIT 20').fetchall()
