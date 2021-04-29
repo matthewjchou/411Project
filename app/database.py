@@ -4,6 +4,7 @@ from utils import debug_log
 import json
 
 match_history_pks = ['AccountId', 'GameId']
+champion_mastery_pks = ['AccountId', 'SummonerId']
 champions_pks = []
 search_results = None
 
@@ -111,6 +112,8 @@ def search(data):
         pk = match_history_pks
     elif table == 'champions':
         pk = champions_pks
+    elif table == 'championMastery':
+        pk = champion_mastery_pks
 
     k, i = utils.result_to_dict(result, pk)
 
@@ -139,8 +142,9 @@ def adv_query_champion_mastery():
     items = [dict(zip(keys, row)) for row in result]
     for i in items:
         utils.debug_log(str(i))
+    print(list(items[0].values())[0])
     return keys, items
-    
+
 # example code below:
 
 # def fetch_todo() -> dict:

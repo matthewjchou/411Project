@@ -25,7 +25,7 @@ def match_history():
 @app.route('/champion_mastery')
 def champion_mastery():
     keys, items = db_helper.fetch_champion_mastery()
-    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery')
+    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery', graph_bar='/bar')
 
 @app.route('/matches')
 def matches():
@@ -109,11 +109,23 @@ def matt_query():
     keys, items = db_helper.adv_query_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
 
-@app.route("/ethanQuery", methods=['POST'])
+@app.route("/ethanQuery")
 def ethan_query():
     utils.debug_log('being called')
     keys, items = db_helper.adv_query_champion_mastery()
     return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
+
+@app.route('/bar')
+def bar():
+    utils.debug_log('hello')
+    keys, items = db_helper.adv_query_champion_mastery()
+    champ_id_list = []
+    avg_dmg_list = []
+    for item in items:
+        champ_id_list.append(list(item.values())[0])
+        avg_dmg_list.append(list(item.values())[1])
+    print(champ_id_list)
+    return render_template('chart.html', title='Average Damage', max=200000, labels=champ_id_list, values=avg_dmg_list, graph_bar="/bar")
 
 # Example code below:
 
