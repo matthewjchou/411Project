@@ -4,6 +4,7 @@ from utils import debug_log
 import json
 
 match_history_pks = ['AccountId', 'GameId']
+champion_mastery_pks = ['AccountId', 'SummonerId']
 champions_pks = []
 
 champPK = ['DataKey']
@@ -26,6 +27,14 @@ def fetch_tables():
         items.append(item)
 
     return items
+
+def fetch_champion_mastery():
+    conn = db.connect()
+    result = conn.execute('SELECT * FROM championMastery LIMIT 20')
+    conn.close()
+    
+    keys, items = utils.result_to_dict(result)
+    return keys, items
 
 def fetch_champions():
     conn = db.connect()
@@ -130,12 +139,20 @@ def adv_query_match_history():
         utils.debug_log(str(i))
     return keys, items
 
+
 def adv_query_champions():
     conn = db.connect()
     result = conn.execute('SELECT (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) AS summoner, m.Champion AS championChar, c.DataName AS champDName FROM matchHistory m JOIN champions c ON m.Champion = c.DataKey ORDER BY (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) ASC LIMIT 15;')
     conn.close()
     
     keys = ['summoner', 'championChar', 'champDName']
+
+def adv_query_champion_mastery():
+    conn = db.connect()
+    result = conn.execute('SELECT championId, AVG(ChampionPoints) AS avgDamage FROM championMastery c JOIN summoners s ON c.SummonerId = s.Id WHERE Tier = "Challenger" GROUP BY ChampionId LIMIT 15;')
+    conn.close()
+    
+    keys = ['championId', 'avgDamage']
     result = result.fetchall()  
     items = [dict(zip(keys, row)) for row in result]
     for i in items:
