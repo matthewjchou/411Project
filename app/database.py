@@ -5,10 +5,8 @@ import json
 
 match_history_pks = ['AccountId', 'GameId']
 champion_mastery_pks = ['AccountId', 'SummonerId']
-champions_pks = []
-
-champPK = ['DataKey']
-match_pk = []
+champ_pk = ['DataKey']
+match_pk = ['GameId']
 search_results = None
 
 
@@ -30,7 +28,7 @@ def fetch_tables():
 
 def fetch_champion_mastery():
     conn = db.connect()
-    result = conn.execute('SELECT * FROM championMastery LIMIT 20')
+    result = conn.execute('SELECT * FROM championMastery LIMIT 100')
     conn.close()
     
     keys, items = utils.result_to_dict(result)
@@ -47,10 +45,19 @@ def fetch_champions():
 
 def fetch_match_history():
     conn = db.connect()
-    result = conn.execute('SELECT * FROM matchHistory LIMIT 20')
+    result = conn.execute('SELECT * FROM matchHistory LIMIT 100')
     conn.close()
     
     keys, items = utils.result_to_dict(result, match_history_pks)
+    return keys, items
+
+def fetch_matches():
+    conn = db.connect()
+    result = conn.execute('SELECT * FROM matches LIMIT 100')
+    conn.close()
+
+    matchPk = ['GameId']
+    keys, items = utils.result_to_dict(result, matchPk)
     return keys, items
 
 def remove_row_by_pk(table, pks):
@@ -118,7 +125,7 @@ def search(data):
     elif table == 'championMastery':
         pk = champion_mastery_pks
     elif table == 'champions':
-        pk = champPK
+        pk = champ_pk
     elif table == 'matches':
         pk = match_pk
 

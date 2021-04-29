@@ -30,7 +30,8 @@ def champion_mastery():
 
 @app.route('/matches')
 def matches():
-    return render_template('table.html', table_name='Matches')
+    keys, items = db_helper.fetch_matches()
+    return render_template('table.html', table_name='matches', keys=keys, items=items, advQuery='/ryanQuery')
 
 @app.route('/summoners')
 def summoners():
@@ -121,6 +122,12 @@ def ethan_query():
     utils.debug_log('being called')
     keys, items = db_helper.adv_query_champion_mastery()
     return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
+
+@app.route("/ryanQuery", methods=['POST'])
+def ryan_query():
+    utils.debug_log('being called')
+    keys, items = db_helper.Ryan_adv_query_matches()
+    return render_template('table.html', table_name='matches', keys=keys, items=items, advQuery="/ryanQuery")
 
 @app.route('/bar')
 def bar():
