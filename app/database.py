@@ -49,6 +49,15 @@ def fetch_match_history():
     keys, items = utils.result_to_dict(result, match_history_pks)
     return keys, items
 
+
+def fetch_champion_mastery():
+    conn = db.connect()
+    result = conn.execute('SELECT * FROM championMastery LIMIT 20')
+    conn.close()
+    
+    keys, items = utils.result_to_dict(result, match_history_pks)
+    return keys, items
+
 def remove_row_by_pk(table, pks):
     id = utils.generate_where_from_pk(pks)
 
@@ -129,6 +138,20 @@ def adv_query_champion_mastery():
         utils.debug_log(str(i))
     return keys, items
 
+def adv_query_champion_mastery():
+    conn = db.connect()
+    result = conn.execute('SELECT championId, AVG(ChampionPoints) AS avgDamage FROM championMastery c JOIN summoners s ON c.SummonerId = s.Id WHERE Tier = "Challenger" GROUP BY ChampionId LIMIT 15;')
+    conn.close()
+    
+    keys = ['championId', 'avgDamage']
+    result = result.fetchall()  
+    items = [dict(zip(keys, row)) for row in result]
+    for i in items:
+        utils.debug_log(str(i))
+    return keys, items
+    
+
+    
 # example code below:
 
 # def fetch_todo() -> dict:
