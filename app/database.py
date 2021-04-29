@@ -103,7 +103,12 @@ def search(data):
     conn.close()
 
     pk = []
-    if table == 'champions':
+
+    if table == 'matchHistory':
+        pk = match_history_pks
+    elif table == 'championMastery':
+        pk = champion_mastery_pks
+    elif table == 'champions':
         pk = champPK
     elif table == 'matches':
         pk = match_pk
