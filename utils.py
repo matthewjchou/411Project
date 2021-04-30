@@ -15,7 +15,7 @@ def normal_to_snake(normal):
     ret = ""
     for s in split:
         ret += s.lower() + '_'
-    # debug_log(ret[:-1])
+    # # debug_log(ret[:-1])
     return ret[:-1]
 
 def normal_to_camel(normal):
@@ -27,7 +27,7 @@ def normal_to_camel(normal):
             continue
         ret += s[0].upper() + s[1:]
 
-    # debug_log(ret)
+    # # debug_log(ret)
     return ret
 
 def normal_to_hyphen(normal):
@@ -65,11 +65,9 @@ def result_to_dict(result, PK=None):
     if PK:
         for i, item in enumerate(items):
             key = {}
-            debug_log(str(item))
             for k in PK:
                 key[k] = item[k]
             items[i]['PK'] = str(key)
-            debug_log(str(items[i]))
 
     return items[0].keys(), items
 

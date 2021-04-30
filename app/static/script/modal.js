@@ -68,9 +68,15 @@ $(document).ready(function () {
 
     $('.remove').click(function () {
         const remove = $(this)
+        console.log(remove.data('pk'))
+        // console.log(remove.data('source'))
         $.ajax({
             type: 'POST',
-            url: '/delete/' + remove.data('source'),
+            url: '/delete/' + remove.data('pk'),
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                'table': remove.data('source')
+            }),
             success: function (res) {
                 console.log(res.response)
                 location.reload();
@@ -137,8 +143,41 @@ $(document).ready(function () {
             contentType: 'application/json;charset=UTF-8',
             data: JSON.stringify(dict),
             success: function (res) {
+                console.log(res)
                 console.log(res.response)
                 location.href = '/searchResults';
+            },
+            error: function () {
+                console.log('Error');
+            }
+        });
+    });
+
+    $('#procedure-modal').on('show.bs.modal', function (event) {
+        // tableName = button.data('source')
+        // keys = button.data('keys')
+
+        // keys = keys.slice(11,-2)
+        // console.log(keys)
+        // keys = keys.split(',')
+        // for (i = 0; i < keys.length; i++) {
+        //     keys[i] = keys[i].slice(1,-1)
+        // }
+    });
+
+    $('#submit-procedure').click(function () {
+        var dict = {}
+        dict.param = $('#searchBox').val()
+        console.log(JSON.stringify(dict))
+
+        $.ajax({
+            type: 'POST',
+            url: '/storedProcedure',
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify(dict),
+            success: function (res) {
+                console.log(res.response)
+                location.href = '/procedureResults';
             },
             error: function () {
                 console.log('Error');

@@ -20,6 +20,39 @@
             <h1 class="mt-5">Team 70-segfaults</h1>
         </main>
 
+        <div class="container">    
+        
+            <!-- Button trigger modal -->
+            <div style="text-align: right;">
+            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#procedure-modal">Procedure</button>
+            </div>
+
+            
+            <div class="modal fade" id="procedure-modal" tabindex="-1" aria-labelledby="Label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="Label">Procedure</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                
+                <div class="modal-body">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Parameter</span>
+                        <input id="searchBox" type="text" class="form-control" placeholder="Text here" aria-label="task-name" aria-describedby="basic-addon1">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button id="submit-procedure" type="button" class="btn btn-primary">Go</button>
+                </div>
+                </div>
+            </div>
+            </div>
+
+        </div>
 
         <!--Todo Table-->
     <div class="container table-responsive">          

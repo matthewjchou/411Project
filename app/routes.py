@@ -5,7 +5,7 @@ from app import database as db_helper
 import utils
 import json
 
-search_results = None
+search_result = None
 
 @app.route("/")
 def homepage():
@@ -39,12 +39,13 @@ def summoners():
 
 @app.route("/delete/<string:keys>", methods=['POST'])
 def delete(keys):
-    """ recieved post requests for entry delete """
-    utils.debug_log(str(keys))
-    split = keys.split('|')
-    table = utils.hyphen_to_camel(split[0])
+    data = request.get_json()
+    data = utils.fix_nesting(data)
+    data = json.loads(data)
+
+    table = utils.hyphen_to_camel(data['table'])
     try:
-        db_helper.remove_row_by_pk(table, split[1])
+        db_helper.remove_row_by_pk(table, keys)
         result = {'success': True, 'response': 'Removed row'}
     except:
         result = {'success': False, 'response': 'Something went wrong'}
@@ -54,9 +55,9 @@ def delete(keys):
 @app.route("/edit", methods=['POST'])
 def update():
     """ recieved post requests for entry updates """
-    utils.debug_log('here')
+    # utils.debug_log('here')
     data = request.get_json()
-    utils.debug_log(str(data))
+    # utils.debug_log(str(data))
 
     try:
         db_helper.update_row(data)
@@ -70,7 +71,7 @@ def update():
 def create():
     """ recieves post requests to add new task """
     data = request.get_json()
-    utils.debug_log(str(data))
+    # utils.debug_log(str(data))
 
     try:
         db_helper.create_row(data)
@@ -83,55 +84,50 @@ def create():
 @app.route("/search", methods=['POST'])
 def search():
     data = request.get_json()
-    utils.debug_log(str(data))
+    # # utils.debug_log(str(data))
     data = utils.fix_nesting(data)
     data = json.loads(data)
     
     try:
         keys, items = db_helper.search(data)
-        global search_results
-        search_results = (data['table'], keys, items)
-        utils.debug_log(str(search_results))
+        global search_result
+        search_result = (data['table'], keys, items)
+        # utils.debug_log(str(search_result))
         result = {'success': True, 'response': 'Done'}
     except Exception as e:
-        utils.debug_log(str(e))
-        result = {'success': False, 'response': 'Something went wrong'}
+        # utils.debug_log(str(e))
+        result = {'success': False, 'response': f'Something went wrong'}
 
     return jsonify(result)
 
 @app.route("/searchResults")
 def search_results():
-    table = search_results[0]
-    utils.debug_log(table)
-    return render_template('table.html', table_name=table, keys=search_results[1], items=search_results[2])
+    table = search_result[0]
+    # utils.debug_log(table)
+    return render_template('table.html', table_name=table, keys=search_result[1], items=search_result[2])
 
 @app.route("/mattQuery")
 def matt_query():
-    utils.debug_log('here1')
     keys, items = db_helper.adv_query_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
     
 @app.route("/hskQuery", methods=['POST'])
 def hsk_query():
-    utils.debug_log('being called')
     keys, items = db_helper.adv_query_champions()
     return render_template('table.html', table_name='champions', keys=keys, items=items, advQuery="/hskQuery")
 
 @app.route("/ethanQuery")
 def ethan_query():
-    utils.debug_log('being called')
     keys, items = db_helper.adv_query_champion_mastery()
     return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
 
 @app.route("/ryanQuery", methods=['POST'])
 def ryan_query():
-    utils.debug_log('being called')
     keys, items = db_helper.Ryan_adv_query_matches()
     return render_template('table.html', table_name='matches', keys=keys, items=items, advQuery="/ryanQuery")
 
 @app.route('/bar')
 def bar():
-    utils.debug_log('hello')
     keys, items = db_helper.adv_query_champion_mastery()
     champ_id_list = []
     avg_dmg_list = []
@@ -141,46 +137,27 @@ def bar():
     print(champ_id_list)
     return render_template('chart.html', title='Average Damage', max=200000, labels=champ_id_list, values=avg_dmg_list, graph_bar="/bar")
 
-# Example code below:
+@app.route('/storedProcedure', methods=['POST'])
+def stored_procedure():
+    data = request.get_json()
+    # utils.debug_log('here')
+    # utils.debug_log(str(data))
+    data = utils.fix_nesting(data)
+    # utils.debug_log(str(data))
+    data = json.loads(data)
 
-# @app.route("/delete/<int:task_id>", methods=['POST'])
-# def delete(task_id):
-#     """ recieved post requests for entry delete """
+    try:
+        keys, items = db_helper.call_stored_procedure(data['param'])
+        global procedure_results
+        procedure_results = (keys, items)
+        # utils.debug_log(str(procedure_results))
+        result = {'success': True, 'response': 'Done'}
+    except Exception as e:
+        # utils.debug_log(str(e))
+        result = {'success': False, 'response': 'Something went wrong'}
 
-#     try:
-#         db_helper.remove_task_by_id(task_id)
-#         result = {'success': True, 'response': 'Removed task'}
-#     except:
-#         result = {'success': False, 'response': 'Something went wrong'}
+    return jsonify(result)
 
-#     return jsonify(result)
-
-
-# @app.route("/edit/<int:task_id>", methods=['POST'])
-# def update(task_id):
-#     """ recieved post requests for entry updates """
-
-#     data = request.get_json()
-
-#     try:
-#         if "status" in data:
-#             db_helper.update_status_entry(task_id, data["status"])
-#             result = {'success': True, 'response': 'Status Updated'}
-#         elif "description" in data:
-#             db_helper.update_task_entry(task_id, data["description"])
-#             result = {'success': True, 'response': 'Task Updated'}
-#         else:
-#             result = {'success': True, 'response': 'Nothing Updated'}
-#     except:
-#         result = {'success': False, 'response': 'Something went wrong'}
-
-#     return jsonify(result)
-
-
-# @app.route("/create", methods=['POST'])
-# def create():
-#     """ recieves post requests to add new task """
-#     data = request.get_json()
-#     db_helper.insert_new_task(data['description'])
-#     result = {'success': True, 'response': 'Done'}
-#     return jsonify(result)
+@app.route('/procedureResults')
+def procedure_results():
+    return render_template('table.html', table_name='Procedure Results', keys=procedure_results[0], items=procedure_results[1])

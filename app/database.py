@@ -4,7 +4,7 @@ from utils import debug_log
 import json
 
 match_history_pks = ['AccountId', 'GameId']
-champion_mastery_pks = ['AccountId', 'SummonerId']
+champion_mastery_pks = ['SummonerId']
 champ_pk = ['DataKey']
 match_pk = ['GameId']
 search_results = None
@@ -65,7 +65,7 @@ def remove_row_by_pk(table, pks):
 
     conn = db.connect()
     query = f'DELETE FROM {table} WHERE {id};'
-    utils.debug_log(query)
+    # utils.debug_log(query)
     conn.execute(query)
     conn.close()
 
@@ -76,11 +76,11 @@ def create_row(data):
     table = data['table']
     table = utils.hyphen_to_camel(table)
     fields, keys, vals = utils.generate_fields(data)
-    utils.debug_log(str(fields))
+    # utils.debug_log(str(fields))
 
     conn = db.connect()
     query = f'INSERT INTO {table} ({keys}) VALUES ({vals})'
-    utils.debug_log(query)
+    # utils.debug_log(query)
     conn.execute(query)
     conn.close()
 
@@ -91,16 +91,16 @@ def update_row(data):
 
     pks = data['pk']
     id = utils.generate_where_from_pk(pks)
-    utils.debug_log(id)
+    # utils.debug_log(id)
 
     table = data['table']
     table = utils.hyphen_to_camel(table)
     fields, k, v = utils.generate_fields(data)
-    utils.debug_log(str(fields))
+    # utils.debug_log(str(fields))
 
     conn = db.connect()
     query = f'UPDATE {table} SET {fields} WHERE {id};'
-    utils.debug_log(query)
+    # utils.debug_log(query)
     conn.execute(query)
     conn.close()
 
@@ -114,7 +114,7 @@ def search(data):
 
     conn = db.connect()
     query = f'SELECT * FROM {table} WHERE {searches};'
-    utils.debug_log(query)
+    # utils.debug_log(query)
     result = conn.execute(query)
     conn.close()
 
@@ -128,13 +128,11 @@ def search(data):
         pk = champ_pk
     elif table == 'matches':
         pk = match_pk
-
     k, i = utils.result_to_dict(result, pk)
 
     return k, i
 
 def adv_query_match_history():
-    utils.debug_log("here2")
     conn = db.connect()
     result = conn.execute('SELECT (SELECT Name FROM summoners s WHERE s.AccountId = m.AccountId) AS Name, COUNT(DISTINCT Champion) AS Num_Champions FROM matchHistory m GROUP BY AccountId LIMIT 100;')
     conn.close()
@@ -142,8 +140,8 @@ def adv_query_match_history():
     keys = ['Name', 'Num_Champions']
     result = result.fetchall()  
     items = [dict(zip(keys, row)) for row in result]
-    for i in items:
-        utils.debug_log(str(i))
+    # for i in items:
+        # utils.debug_log(str(i))
     return keys, items
 
 
@@ -162,9 +160,22 @@ def adv_query_champion_mastery():
     keys = ['championId', 'avgDamage']
     result = result.fetchall()  
     items = [dict(zip(keys, row)) for row in result]
-    for i in items:
-        utils.debug_log(str(i))
+    # for i in items:
+        # utils.debug_log(str(i))
     return keys, items
+
+def call_stored_procedure(param):
+    conn = db.connect()
+    result = conn.execute(f"CALL getAvgPlayTimes('{param.upper()}')")
+    conn.close()
+
+    keys = ['AccountId', 'PlayTime', 'LanePhase', 'GamePlayStatus']
+    result = result.fetchall()
+    items = [dict(zip(keys, row)) for row in result]
+    # for i in items:
+        # utils.debug_log(str(i))
+    return keys, items
+
 
 # example code below:
 
