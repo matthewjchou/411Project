@@ -23,6 +23,11 @@ def match_history():
     keys, items = db_helper.fetch_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery='/mattQuery')
 
+@app.route('/summoners')
+def summoners():
+    keys, items = db_helper.fetch_summoners()
+    return render_template('table.html', table_name='Summoners', keys=keys, items=items)
+
 @app.route('/champion_mastery')
 def champion_mastery():
     keys, items = db_helper.fetch_champion_mastery()
@@ -32,10 +37,6 @@ def champion_mastery():
 def matches():
     keys, items = db_helper.fetch_matches()
     return render_template('table.html', table_name='matches', keys=keys, items=items, advQuery='/ryanQuery')
-
-@app.route('/summoners')
-def summoners():
-    return render_template('table.html', table_name='Summoners')
 
 @app.route("/delete/<string:keys>", methods=['POST'])
 def delete(keys):
