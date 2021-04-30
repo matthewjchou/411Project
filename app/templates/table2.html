@@ -103,7 +103,12 @@
         </div>
         </div>
     
-        
+        <div class="container">
+            <div style="text-align: right;">
+                <form method="GET" action="{{graph_bar}}">
+                    <button type="submit" class="btn btn-primary">Chart</button>
+                </form>
+        </div>
         </div>
         <!--Todo Table-->
         <div class="container table-responsive">          
@@ -129,7 +134,9 @@
 
                     <td><button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#task-modal" data-source="{{table_name}}" data-pk="{{item.PK}}" data-type="Edit" data-keys={{keys|string|replace(' ', '')}}><i class="fa fa-pen fa-1" aria-hidden="true"></i></button></td>
 
-                    <td><button class="btn btn-outline-secondary btn-sm remove" data-pk="{{item.PK}}" data-source="{{table_name}}" type="button"><i class="fa fa-trash fa-1" aria-hidden="true"></i></button></td>
+                    <td><form method="POST" action="{{"/delete/" ~ table_name ~ "|" ~ item.PK}}">
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </form></td>
                 </tr>
             {% endfor %}
             

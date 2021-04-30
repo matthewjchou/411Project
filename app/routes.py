@@ -26,7 +26,7 @@ def match_history():
 @app.route('/champion_mastery')
 def champion_mastery():
     keys, items = db_helper.fetch_champion_mastery()
-    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery', graph_bar='/bar')
+    return render_template('table2.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery', graph_bar='/bar')
 
 @app.route('/matches')
 def matches():
@@ -111,7 +111,7 @@ def matt_query():
     keys, items = db_helper.adv_query_match_history()
     return render_template('table.html', table_name='Match-History', keys=keys, items=items, advQuery="/mattQuery")
     
-@app.route("/hskQuery", methods=['POST'])
+@app.route("/hskQuery")
 def hsk_query():
     keys, items = db_helper.adv_query_champions()
     return render_template('table.html', table_name='champions', keys=keys, items=items, advQuery="/hskQuery")
@@ -119,9 +119,9 @@ def hsk_query():
 @app.route("/ethanQuery")
 def ethan_query():
     keys, items = db_helper.adv_query_champion_mastery()
-    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
+    return render_template('table2.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
 
-@app.route("/ryanQuery", methods=['POST'])
+@app.route("/ryanQuery")
 def ryan_query():
     keys, items = db_helper.Ryan_adv_query_matches()
     return render_template('table.html', table_name='matches', keys=keys, items=items, advQuery="/ryanQuery")
