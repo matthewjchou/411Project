@@ -4,6 +4,7 @@ from utils import debug_log
 import json
 
 match_history_pks = ['AccountId', 'GameId']
+champion_mastery_pks = ['SummonerId', 'ChampionId']
 champions_pks = []
 search_results = None
 
@@ -50,13 +51,6 @@ def fetch_match_history():
     return keys, items
 
 
-def fetch_champion_mastery():
-    conn = db.connect()
-    result = conn.execute('SELECT * FROM championMastery LIMIT 20')
-    conn.close()
-    
-    keys, items = utils.result_to_dict(result, match_history_pks)
-    return keys, items
 
 def remove_row_by_pk(table, pks):
     id = utils.generate_where_from_pk(pks)
@@ -121,6 +115,8 @@ def search(data):
         pk = match_history_pks
     elif table == 'champions':
         pk = champions_pks
+    elif table == "championMastery":
+        pk = champion_mastery_pks
 
     k, i = utils.result_to_dict(result, pk)
 
