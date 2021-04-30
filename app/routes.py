@@ -31,7 +31,7 @@ def summoners():
 @app.route('/champion_mastery')
 def champion_mastery():
     keys, items = db_helper.fetch_champion_mastery()
-    return render_template('table2.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery', graph_bar='/bar')
+    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery='/ethanQuery', graph_bar='/bar')
 
 @app.route('/matches')
 def matches():
@@ -55,10 +55,7 @@ def delete(keys):
 
 @app.route("/edit", methods=['POST'])
 def update():
-    """ recieved post requests for entry updates """
-    # utils.debug_log('here')
     data = request.get_json()
-    # utils.debug_log(str(data))
 
     try:
         db_helper.update_row(data)
@@ -115,17 +112,17 @@ def matt_query():
 @app.route("/hskQuery")
 def hsk_query():
     keys, items = db_helper.adv_query_champions()
-    return render_template('table.html', table_name='champions', keys=keys, items=items, advQuery="/hskQuery")
+    return render_template('table.html', table_name='Champions', keys=keys, items=items, advQuery="/hskQuery")
 
 @app.route("/ethanQuery")
 def ethan_query():
     keys, items = db_helper.adv_query_champion_mastery()
-    return render_template('table2.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
+    return render_template('table.html', table_name='Champion-Mastery', keys=keys, items=items, advQuery="/ethanQuery")
 
 @app.route("/ryanQuery")
 def ryan_query():
     keys, items = db_helper.Ryan_adv_query_matches()
-    return render_template('table.html', table_name='matches', keys=keys, items=items, advQuery="/ryanQuery")
+    return render_template('table.html', table_name='Matches', keys=keys, items=items, advQuery="/ryanQuery")
 
 @app.route('/bar')
 def bar():
@@ -141,10 +138,7 @@ def bar():
 @app.route('/storedProcedure', methods=['POST'])
 def stored_procedure():
     data = request.get_json()
-    # utils.debug_log('here')
-    # utils.debug_log(str(data))
     data = utils.fix_nesting(data)
-    # utils.debug_log(str(data))
     data = json.loads(data)
 
     try:

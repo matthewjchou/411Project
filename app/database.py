@@ -32,7 +32,7 @@ def fetch_champion_mastery():
     result = conn.execute('SELECT * FROM championMastery LIMIT 100')
     conn.close()
     
-    keys, items = utils.result_to_dict(result)
+    keys, items = utils.result_to_dict(result, champion_mastery_pks)
     return keys, items
 
 def fetch_champions():
@@ -40,8 +40,7 @@ def fetch_champions():
     result = conn.execute('SELECT * FROM champions')
     conn.close()
 
-    champPK = ['DataKey']
-    keys, items = utils.result_to_dict(result, champPK)
+    keys, items = utils.result_to_dict(result, champ_pk)
     return keys, items
 
 def fetch_match_history():
@@ -57,8 +56,7 @@ def fetch_matches():
     result = conn.execute('SELECT * FROM matches LIMIT 100')
     conn.close()
 
-    matchPk = ['GameId']
-    keys, items = utils.result_to_dict(result, matchPk)
+    keys, items = utils.result_to_dict(result, match_pk)
     return keys, items
 
 def fetch_summoners():
@@ -66,8 +64,7 @@ def fetch_summoners():
     result = conn.execute('SELECT * FROM summoners LIMIT 100')
     conn.close()
 
-    summonerPk = ['AccountId']
-    keys, items = utils.result_to_dict(result, summonerPk)
+    keys, items = utils.result_to_dict(result, summoners_pk)
     return keys, items
 
 def remove_row_by_pk(table, pks):
@@ -75,7 +72,6 @@ def remove_row_by_pk(table, pks):
 
     conn = db.connect()
     query = f'DELETE FROM {table} WHERE {id};'
-    # utils.debug_log(query)
     conn.execute(query)
     conn.close()
 
@@ -153,8 +149,7 @@ def adv_query_match_history():
     keys = ['Name', 'Num_Champions']
     result = result.fetchall()  
     items = [dict(zip(keys, row)) for row in result]
-    # for i in items:
-        # utils.debug_log(str(i))
+ 
     return keys, items
 
 
@@ -164,6 +159,10 @@ def adv_query_champions():
     conn.close()
     
     keys = ['summoner', 'championChar', 'champDName']
+    result = result.fetchall()
+    items = [dict(zip(keys, row)) for row in result]
+
+    return keys, items
 
 def adv_query_champion_mastery():
     conn = db.connect()
@@ -173,8 +172,18 @@ def adv_query_champion_mastery():
     keys = ['championId', 'avgDamage']
     result = result.fetchall()  
     items = [dict(zip(keys, row)) for row in result]
-    # for i in items:
-        # utils.debug_log(str(i))
+
+    return keys, items
+
+def Ryan_adv_query_matches():
+    conn = db.connect()
+    result = conn.execute('SELECT m.AccountID AS ID, avg(m.Timestamp) as AvgPlayTime FROM matchHistory m join summoners s on m.AccountID = s.AccountID WHERE s.Tier = "Challenger" GROUP BY m.AccountID ORDER BY AvgPlayTime DESC limit 15;')
+    conn.close()
+
+    keys = ['ID', 'AvgPlayTime']
+    result = result.fetchall()
+    items = [dict(zip(keys, row)) for row in result]
+
     return keys, items
 
 def call_stored_procedure(param):
